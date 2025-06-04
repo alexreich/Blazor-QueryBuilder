@@ -1,3 +1,5 @@
+@use "sass:list";
+
 $theme-name: default !default;
 
 // common
@@ -82,7 +84,7 @@ $ticks-position: 5px, 10px !default;
 
   .rules-list {
     list-style: none;
-    padding: 0 0 0 #{nth($ticks-position, 1) + nth($ticks-position, 2)};
+    padding: 0 0 0 #{list.nth($ticks-position, 1) + list.nth($ticks-position, 2)};
     margin: 0;
   }
 
@@ -134,8 +136,8 @@ $ticks-position: 5px, 10px !default;
     &::after {
       content: '';
       position: absolute;
-      left: #{-1 * nth($ticks-position, 2)};
-      width: nth($ticks-position, 2);
+      left: #{-1 * list.nth($ticks-position, 2)};
+      width: list.nth($ticks-position, 2);
       height: calc(50% + #{$item-vertical-spacing});
       border-color: $ticks-color;
       border-style: solid;
