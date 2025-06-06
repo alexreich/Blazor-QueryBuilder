@@ -103,6 +103,65 @@ jQuery-QueryBuilder is available on [jsDelivr](https://www.jsdelivr.com/package/
 ($.extendext is directly included in the [standalone](https://github.com/mistic100/jQuery-QueryBuilder/blob/master/dist/js/query-builder.standalone.js) file)
 
 
+## 🧪 Test Application
+
+A comprehensive test application is included to demonstrate all BlazorQueryBuilder features in action.
+
+### Running the Test App
+
+```bash
+cd BlazorQueryBuilder.TestApp
+chmod +x run-demo.sh
+./run-demo.sh
+```
+
+Or on Windows:
+```powershell
+cd BlazorQueryBuilder.TestApp
+.\run-demo.ps1
+```
+
+Or manually:
+```bash
+cd BlazorQueryBuilder.TestApp
+dotnet build
+dotnet run
+```
+
+### Features Demonstrated
+
+The test application includes three main sections:
+
+#### 🏠 Home Page
+- Overview of BlazorQueryBuilder capabilities
+- Installation and quick start guide
+- Feature highlights and code examples
+
+#### 📊 Examples Page
+- **Interactive QueryBuilder** with real-time JSON output
+- **Multiple Filter Types** (strings, numbers, dates, booleans, selections)
+- **Sample Data Loading** with simple and complex queries
+- **Event Handling** demonstration with live rule change notifications
+- **Validation Testing** with error handling examples
+
+#### ⚙️ Advanced Page
+- **Performance Testing** with execution time measurement
+- **Method Testing** for all async operations (`GetRulesAsync`, `SetRulesAsync`, etc.)
+- **Minimal Configuration** examples
+- **API Reference** with parameter documentation
+- **Debug Information** and browser compatibility details
+
+### Test Scenarios
+
+The application provides comprehensive test scenarios for:
+- Creating and modifying simple rules
+- Building complex nested queries with multiple groups
+- Testing all supported data types and operators
+- Validating async method performance
+- Demonstrating real-time event callbacks
+- Loading and manipulating complex rule structures
+
+Visit `http://localhost:5000` after running the application to explore all features interactively.
 
 ## Developement
 

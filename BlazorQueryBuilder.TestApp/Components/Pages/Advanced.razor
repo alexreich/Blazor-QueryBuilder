@@ -1,0 +1,350 @@
+@page "/advanced"
+@using BlazorQueryBuilder.Components
+@using BlazorQueryBuilder.Models
+
+<PageTitle>Advanced</PageTitle>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="mb-4">
+                <i class="bi bi-gear-fill text-primary me-2"></i>
+                Advanced Features
+            </h2>
+            <p class="lead text-muted mb-4">
+                Explore advanced QueryBuilder configurations, custom operators, and developer features.
+            </p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-tools me-2"></i>
+                        Minimal Configuration Example
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p>Simple QueryBuilder with minimal setup - just a few basic filters.</p>
+                    
+                    <QueryBuilder @ref="simpleQueryBuilder"
+                                  Filters="simpleFilters"
+                                  OnRulesChanged="OnSimpleRulesChanged"
+                                  CssClass="mb-3 border rounded p-2" />
+
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-sm btn-outline-primary" @onclick="GetSimpleRules">
+                            Get Rules
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="ClearSimpleRules">
+                            Clear
+                        </button>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(simpleRules))
+                    {
+                        <div class="mt-3">
+                            <small class="text-muted d-block mb-1">Output:</small>
+                            <pre class="bg-light p-2 small rounded"><code>@simpleRules</code></pre>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-cpu me-2"></i>
+                        Performance & Methods Demo
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p>Test the performance and async methods of the QueryBuilder component.</p>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Async Operations</h6>
+                            <div class="d-grid gap-2">
+                                <button type="button" class="btn btn-info btn-sm" @onclick="TestGetRulesAsync" disabled="@isLoading">
+                                    @if (isLoading) { <span class="spinner-border spinner-border-sm me-2"></span> }
+                                    GetRulesAsync()
+                                </button>
+                                <button type="button" class="btn btn-warning btn-sm" @onclick="TestValidateAsync" disabled="@isLoading">
+                                    @if (isLoading) { <span class="spinner-border spinner-border-sm me-2"></span> }
+                                    ValidateAsync()
+                                </button>
+                                <button type="button" class="btn btn-success btn-sm" @onclick="TestSetRulesAsync" disabled="@isLoading">
+                                    @if (isLoading) { <span class="spinner-border spinner-border-sm me-2"></span> }
+                                    SetRulesAsync()
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Method Results</h6>
+                            <div class="bg-light p-2 rounded" style="min-height: 120px; font-size: 0.8em;">
+                                @if (!string.IsNullOrEmpty(methodResults))
+                                {
+                                    <pre class="mb-0">@methodResults</pre>
+                                }
+                                else
+                                {
+                                    <small class="text-muted">Click buttons to test async methods...</small>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    
+                    @if (performanceTime > 0)
+                    {
+                        <div class="alert alert-info mt-3" role="alert">
+                            <i class="bi bi-stopwatch me-2"></i>
+                            Last operation completed in <strong>@performanceTime ms</strong>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="bi bi-code-slash me-2"></i>
+                        API Reference
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <h6>Component Parameters</h6>
+                    <ul class="list-unstyled small">
+                        <li><code>@@ref</code> - Component reference</li>
+                        <li><code>Filters</code> - Filter definitions</li>
+                        <li><code>Options</code> - Configuration options</li>
+                        <li><code>Rules</code> - Initial rules</li>
+                        <li><code>OnRulesChanged</code> - Event callback</li>
+                        <li><code>CssClass</code> - Additional CSS classes</li>
+                    </ul>
+
+                    <h6 class="mt-3">Public Methods</h6>
+                    <ul class="list-unstyled small">
+                        <li><code>GetRulesAsync()</code></li>
+                        <li><code>SetRulesAsync(rules)</code></li>
+                        <li><code>ClearAsync()</code></li>
+                        <li><code>ValidateAsync()</code></li>
+                    </ul>
+
+                    <h6 class="mt-3">Event Callbacks</h6>
+                    <ul class="list-unstyled small">
+                        <li><code>OnRulesChanged</code> - Rule changes</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="bi bi-palette me-2"></i>
+                        Theme Information
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <p class="small">Current theme: <strong>Default Bootstrap</strong></p>
+                    <p class="small">Icons: <strong>Bootstrap Icons</strong></p>
+                    <p class="small">CSS Framework: <strong>Bootstrap 5.3.6</strong></p>
+                    <p class="small">jQuery Version: <strong>3.7.1</strong></p>
+                    
+                    <hr>
+                    
+                    <h6>Available Icon Classes</h6>
+                    <div class="d-flex flex-wrap gap-2">
+                        <span class="badge bg-secondary"><i class="bi bi-plus-square"></i> Add Group</span>
+                        <span class="badge bg-secondary"><i class="bi bi-plus"></i> Add Rule</span>
+                        <span class="badge bg-secondary"><i class="bi bi-x-square"></i> Remove Group</span>
+                        <span class="badge bg-secondary"><i class="bi bi-x"></i> Remove Rule</span>
+                        <span class="badge bg-secondary"><i class="bi bi-exclamation-triangle"></i> Error</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Debug Information
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <small>
+                        <strong>Component State:</strong><br>
+                        Simple QB Rules: @(!string.IsNullOrEmpty(simpleRules) ? "✅ Has rules" : "❌ Empty")<br>
+                        Loading: @(isLoading ? "✅ Active" : "❌ Idle")<br>
+                        Last Performance: @(performanceTime)ms<br><br>
+                        
+                        <strong>Browser Info:</strong><br>
+                        User Agent: <span class="text-break">@userAgent</span>
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private QueryBuilder simpleQueryBuilder = default!;
+    private string simpleRules = "";
+    private string methodResults = "";
+    private bool isLoading = false;
+    private long performanceTime = 0;
+    private string userAgent = "Loading...";
+
+    private readonly QueryBuilderFilter[] simpleFilters = new[]
+    {
+        new QueryBuilderFilter
+        {
+            Id = "username",
+            Label = "Username",
+            Type = "string"
+        },
+        new QueryBuilderFilter
+        {
+            Id = "age",
+            Label = "Age",
+            Type = "integer",
+            Validation = new QueryBuilderValidation { Min = 1, Max = 120 }
+        },
+        new QueryBuilderFilter
+        {
+            Id = "active",
+            Label = "Active",
+            Type = "boolean"
+        }
+    };
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // In a real app, you might get this from JSInterop
+            userAgent = "Mozilla/5.0 (Demo Browser)";
+            StateHasChanged();
+        }
+    }
+
+    private void OnSimpleRulesChanged(string rules)
+    {
+        simpleRules = rules;
+        StateHasChanged();
+    }
+
+    private async Task GetSimpleRules()
+    {
+        simpleRules = await simpleQueryBuilder.GetRulesAsync();
+        StateHasChanged();
+    }
+
+    private async Task ClearSimpleRules()
+    {
+        await simpleQueryBuilder.ClearAsync();
+        simpleRules = "";
+        StateHasChanged();
+    }
+
+    private async Task TestGetRulesAsync()
+    {
+        isLoading = true;
+        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+        
+        try
+        {
+            var rules = await simpleQueryBuilder.GetRulesAsync();
+            stopwatch.Stop();
+            performanceTime = stopwatch.ElapsedMilliseconds;
+            
+            methodResults = $"GetRulesAsync() Result:\n{rules}\n\nCompleted in {performanceTime}ms";
+        }
+        catch (Exception ex)
+        {
+            methodResults = $"Error: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task TestValidateAsync()
+    {
+        isLoading = true;
+        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+        
+        try
+        {
+            var isValid = await simpleQueryBuilder.ValidateAsync();
+            stopwatch.Stop();
+            performanceTime = stopwatch.ElapsedMilliseconds;
+            
+            methodResults = $"ValidateAsync() Result:\n{(isValid ? "✅ Valid" : "❌ Invalid")}\n\nCompleted in {performanceTime}ms";
+        }
+        catch (Exception ex)
+        {
+            methodResults = $"Error: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task TestSetRulesAsync()
+    {
+        isLoading = true;
+        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+        
+        try
+        {
+            var testRules = new
+            {
+                condition = "AND",
+                rules = new object[]
+                {
+                    new
+                    {
+                        id = "username",
+                        field = "username",
+                        type = "string",
+                        input = "text",
+                        @operator = "equal",
+                        value = "admin"
+                    },
+                    new
+                    {
+                        id = "age",
+                        field = "age",
+                        type = "integer",
+                        input = "number",
+                        @operator = "greater",
+                        value = 18
+                    }
+                }
+            };
+            
+            await simpleQueryBuilder.SetRulesAsync(testRules);
+            stopwatch.Stop();
+            performanceTime = stopwatch.ElapsedMilliseconds;
+            
+            methodResults = $"SetRulesAsync() Result:\n✅ Rules set successfully\n\nTest rules:\n- username = 'admin'\n- age > 18\n\nCompleted in {performanceTime}ms";
+        }
+        catch (Exception ex)
+        {
+            methodResults = $"Error: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+}

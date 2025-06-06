@@ -1,0 +1,94 @@
+@page "/"
+
+<PageTitle>Home</PageTitle>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="jumbotron bg-primary text-white rounded p-5 mb-4">
+                <h1 class="display-4">🔍 Blazor QueryBuilder Test App</h1>
+                <p class="lead">Interactive demonstration of the Blazor QueryBuilder component - a modern C# wrapper for jQuery QueryBuilder.</p>
+                <hr class="my-4 border-light">
+                <p>This application showcases the full capabilities of the BlazorQueryBuilder library, including strongly-typed C# models, event callbacks, and seamless jQuery integration.</p>
+                <a class="btn btn-light btn-lg" href="/examples" role="button">
+                    <i class="bi bi-play-circle me-2"></i>
+                    Try Examples
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="bi bi-code-slash text-primary fs-3 me-3"></i>
+                        <h5 class="card-title mb-0">Strongly-Typed C#</h5>
+                    </div>
+                    <p class="card-text">Full IntelliSense support with strongly-typed models, filters, and validation rules. Write complex queries using familiar C# syntax.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="bi bi-lightning-charge text-warning fs-3 me-3"></i>
+                        <h5 class="card-title mb-0">Real-time Events</h5>
+                    </div>
+                    <p class="card-text">React to rule changes instantly with Blazor EventCallback. Build dynamic UIs that respond to query modifications in real-time.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="bi bi-puzzle text-success fs-3 me-3"></i>
+                        <h5 class="card-title mb-0">jQuery Compatible</h5>
+                    </div>
+                    <p class="card-text">Seamless integration with existing jQuery QueryBuilder plugins and themes. Zero breaking changes from the original library.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Quick Start</h5>
+                </div>
+                <div class="card-body">
+                    <h6>1. Install the NuGet Package</h6>
+                    <pre class="bg-light p-3 rounded"><code>dotnet add package BlazorQueryBuilder</code></pre>
+                    
+                    <h6 class="mt-3">2. Register Services</h6>
+                    <pre class="bg-light p-3 rounded"><code>builder.Services.AddBlazorQueryBuilder();</code></pre>
+                    
+                    <h6 class="mt-3">3. Use in Razor Component</h6>
+                    <pre class="bg-light p-3 rounded"><code>&lt;QueryBuilder @@ref="queryBuilder" 
+              Filters="filters" 
+              OnRulesChanged="OnRulesChanged" /&gt;</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .jumbotron {
+        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    }
+    
+    .card {
+        transition: transform 0.2s ease-in-out;
+    }
+    
+    .card:hover {
+        transform: translateY(-2px);
+    }
+</style>
