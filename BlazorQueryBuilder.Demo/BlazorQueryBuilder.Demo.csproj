@@ -7,11 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BlazorQueryBuilder" Version="2.5.1" />
+    <ProjectReference Include="../BlazorQueryBuilder.csproj" />
   </ItemGroup>
-
-  <PropertyGroup>
-    <RestoreAdditionalProjectSources>../bin/Release</RestoreAdditionalProjectSources>
-  </PropertyGroup>
 
 </Project>

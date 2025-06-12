@@ -23,6 +23,9 @@
     <Compile Remove="BlazorQueryBuilder.TestApp/**" />
     <Content Remove="BlazorQueryBuilder.TestApp/**" />
     <None Remove="BlazorQueryBuilder.TestApp/**" />
+    <Compile Remove="BlazorQueryBuilder.Demo/**" />
+    <Content Remove="BlazorQueryBuilder.Demo/**" />
+    <None Remove="BlazorQueryBuilder.Demo/**" />
   </ItemGroup>
 
 </Project>

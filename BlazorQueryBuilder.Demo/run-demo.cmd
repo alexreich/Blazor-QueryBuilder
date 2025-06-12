@@ -2,19 +2,20 @@
 echo 🚀 Starting BlazorQueryBuilder Demo
 echo ==================================
 
-rem Build the package first
-echo 📦 Building BlazorQueryBuilder package...
+rem Build the solution
+echo 📦 Building BlazorQueryBuilder solution...
 cd ../
-dotnet build --configuration Release
+dotnet build
 
 if %ERRORLEVEL% EQU 0 (
-    echo ✅ Package built successfully!
+    echo ✅ Solution built successfully!
     
     rem Run the demo
     echo 🎯 Starting demo application...
+    echo 🌐 Open http://localhost:5000 in your browser
     cd BlazorQueryBuilder.Demo
     dotnet run
 ) else (
-    echo ❌ Package build failed!
+    echo ❌ Solution build failed!
     exit /b 1
 )
