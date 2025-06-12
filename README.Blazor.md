@@ -2,6 +2,26 @@
 
 A Blazor component wrapper for the popular jQuery QueryBuilder library, providing a user-friendly interface for building complex queries in Blazor applications.
 
+## 🎯 Try the Demo
+
+Want to see BlazorQueryBuilder in action? Check out our comprehensive demo application:
+
+```bash
+cd BlazorQueryBuilder.Demo
+./run-demo.sh  # Linux/Mac
+# or
+run-demo.cmd   # Windows
+```
+
+The demo showcases:
+- ✅ **Basic Demo**: Simple query building with common filter types
+- ✅ **Advanced Demo**: Complex filters, performance testing, and nested queries
+- ✅ **Real-time JSON Output**: See query structure as you build
+- ✅ **API Method Testing**: Interactive testing of all component methods
+- ✅ **Consumer Example**: Shows exactly how to consume BlazorQueryBuilder as a NuGet package
+
+Visit the [Demo README](BlazorQueryBuilder.Demo/README.md) for detailed instructions.
+
 ## Features
 
 - Full Blazor component integration with JavaScript interop

@@ -15,6 +15,20 @@ Originally forked from [jQuery QueryBuilder](https://github.com/mistic100/jQuery
 ✅ **Event Callbacks** - Real-time notifications of rule changes  
 ✅ **Async API** - Modern async/await pattern for all operations  
 
+## 🎯 Try the Demo
+
+Experience BlazorQueryBuilder in action with our comprehensive demo application:
+
+```bash
+cd BlazorQueryBuilder.Demo
+./run-demo.sh    # Linux/Mac
+run-demo.cmd     # Windows
+```
+
+📖 **[View Demo Documentation](BlazorQueryBuilder.Demo/README.md)**
+
+The demo includes basic examples, advanced configurations, performance testing, and shows exactly how to consume BlazorQueryBuilder as a NuGet package.
+
 ## Quick Start (Blazor)
 
 ### 1. Install the NuGet Package
