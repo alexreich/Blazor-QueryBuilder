@@ -1,0 +1,230 @@
+@page "/querybuilder-example"
+@using BlazorQueryBuilder.Components
+@using BlazorQueryBuilder.Models
+
+<PageTitle>Query Builder Example</PageTitle>
+
+<div class="container mt-4">
+    <h3>Blazor Query Builder Example</h3>
+    <p>This example demonstrates the Blazor QueryBuilder component with various filter types and configurations.</p>
+
+    <QueryBuilder @ref="queryBuilder"
+                  Filters="filters"
+                  Options="options"
+                  OnRulesChanged="OnRulesChanged"
+                  CssClass="mb-3" />
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-primary" @onclick="GetRules">
+                    <i class="bi bi-code"></i> Get Rules
+                </button>
+                <button type="button" class="btn btn-secondary" @onclick="ClearRules">
+                    <i class="bi bi-trash"></i> Clear
+                </button>
+                <button type="button" class="btn btn-info" @onclick="ValidateRules">
+                    <i class="bi bi-check-circle"></i> Validate
+                </button>
+                <button type="button" class="btn btn-warning" @onclick="LoadSampleRules">
+                    <i class="bi bi-upload"></i> Load Sample
+                </button>
+            </div>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(validationMessage))
+    {
+        <div class="alert alert-info mt-3" role="alert">
+            <i class="bi bi-info-circle"></i> @validationMessage
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(currentRules))
+    {
+        <div class="mt-4">
+            <h5>Current Rules (JSON):</h5>
+            <pre class="bg-light p-3 rounded"><code>@currentRules</code></pre>
+        </div>
+    }
+</div>
+
+@code {
+    private QueryBuilder queryBuilder = default!;
+    private string currentRules = "";
+    private string validationMessage = "";
+
+    private readonly QueryBuilderFilter[] filters = new[]
+    {
+        new QueryBuilderFilter
+        {
+            Id = "name",
+            Label = "Product Name",
+            Type = "string",
+            Placeholder = "Enter product name"
+        },
+        new QueryBuilderFilter
+        {
+            Id = "category",
+            Label = "Category",
+            Type = "string",
+            Input = "select",
+            Values = new Dictionary<string, string>
+            {
+                { "electronics", "Electronics" },
+                { "clothing", "Clothing" },
+                { "books", "Books" },
+                { "home", "Home & Garden" },
+                { "sports", "Sports & Outdoors" }
+            }
+        },
+        new QueryBuilderFilter
+        {
+            Id = "price",
+            Label = "Price",
+            Type = "double",
+            Validation = new QueryBuilderValidation
+            {
+                Min = 0,
+                Max = 10000,
+                Step = 0.01
+            }
+        },
+        new QueryBuilderFilter
+        {
+            Id = "in_stock",
+            Label = "In Stock",
+            Type = "boolean",
+            Input = "radio",
+            Values = new Dictionary<string, string>
+            {
+                { "true", "Yes" },
+                { "false", "No" }
+            }
+        },
+        new QueryBuilderFilter
+        {
+            Id = "rating",
+            Label = "Customer Rating",
+            Type = "integer",
+            Validation = new QueryBuilderValidation
+            {
+                Min = 1,
+                Max = 5
+            }
+        },
+        new QueryBuilderFilter
+        {
+            Id = "release_date",
+            Label = "Release Date",
+            Type = "date"
+        },
+        new QueryBuilderFilter
+        {
+            Id = "tags",
+            Label = "Tags",
+            Type = "string",
+            Input = "select",
+            Multiple = true,
+            Values = new Dictionary<string, string>
+            {
+                { "new", "New Arrival" },
+                { "sale", "On Sale" },
+                { "bestseller", "Best Seller" },
+                { "featured", "Featured" }
+            }
+        }
+    };
+
+    private readonly QueryBuilderOptions options = new()
+    {
+        AllowGroups = true,
+        AllowEmpty = false,
+        DefaultCondition = "AND",
+        DisplayErrors = true,
+        DisplayEmptyFilter = true,
+        SelectPlaceholder = "-- Select a filter --",
+        Icons = new QueryBuilderIcons
+        {
+            AddGroup = "bi bi-plus-square",
+            AddRule = "bi bi-plus",
+            RemoveGroup = "bi bi-x-square",
+            RemoveRule = "bi bi-x",
+            Error = "bi bi-exclamation-triangle"
+        }
+    };
+
+    private void OnRulesChanged(string rules)
+    {
+        currentRules = rules;
+        validationMessage = "";
+        StateHasChanged();
+    }
+
+    private async Task GetRules()
+    {
+        currentRules = await queryBuilder.GetRulesAsync();
+        validationMessage = "";
+    }
+
+    private async Task ClearRules()
+    {
+        await queryBuilder.ClearAsync();
+        currentRules = "";
+        validationMessage = "Rules cleared successfully.";
+    }
+
+    private async Task ValidateRules()
+    {
+        var isValid = await queryBuilder.ValidateAsync();
+        validationMessage = isValid ? "Rules are valid!" : "Rules contain validation errors.";
+    }
+
+    private async Task LoadSampleRules()
+    {
+        var sampleRules = new QueryBuilderRule
+        {
+            Condition = "AND",
+            Rules = new List<object>
+            {
+                new
+                {
+                    id = "category",
+                    field = "category",
+                    type = "string",
+                    input = "select",
+                    @operator = "equal",
+                    value = "electronics"
+                },
+                new
+                {
+                    condition = "OR",
+                    rules = new List<object>
+                    {
+                        new
+                        {
+                            id = "price",
+                            field = "price",
+                            type = "double",
+                            input = "number",
+                            @operator = "less",
+                            value = 100.00
+                        },
+                        new
+                        {
+                            id = "rating",
+                            field = "rating",
+                            type = "integer",
+                            input = "number",
+                            @operator = "greater_or_equal",
+                            value = 4
+                        }
+                    }
+                }
+            }
+        };
+
+        await queryBuilder.SetRulesAsync(sampleRules);
+        validationMessage = "Sample rules loaded successfully.";
+    }
+}

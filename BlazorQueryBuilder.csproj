@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>BlazorQueryBuilder</PackageId>
+    <Version>2.5.1</Version>
+    <Authors>Alex Reich</Authors>
+    <Description>Blazor component wrapper for jQuery QueryBuilder - provides an interface to create complex queries</Description>
+    <PackageTags>blazor,query,builder,filter,jquery</PackageTags>
+    <RepositoryUrl>https://github.com/alexreich/Blazor-QueryBuilder</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/alexreich/Blazor-QueryBuilder</PackageProjectUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="BlazorQueryBuilder.TestApp/**" />
+    <Content Remove="BlazorQueryBuilder.TestApp/**" />
+    <None Remove="BlazorQueryBuilder.TestApp/**" />
+    <Compile Remove="BlazorQueryBuilder.Demo/**" />
+    <Content Remove="BlazorQueryBuilder.Demo/**" />
+    <None Remove="BlazorQueryBuilder.Demo/**" />
+  </ItemGroup>
+
+</Project>

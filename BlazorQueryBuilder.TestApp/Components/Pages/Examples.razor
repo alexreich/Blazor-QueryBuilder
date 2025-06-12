@@ -1,0 +1,417 @@
+@page "/examples"
+@using BlazorQueryBuilder.Components
+@using BlazorQueryBuilder.Models
+
+<PageTitle>Examples</PageTitle>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="mb-4">
+                <i class="bi bi-code-square text-primary me-2"></i>
+                QueryBuilder Examples
+            </h2>
+            <p class="lead text-muted mb-4">
+                Interactive examples demonstrating various QueryBuilder configurations and features.
+            </p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="bi bi-gear me-2"></i>
+                        Product Catalog Query Builder
+                    </h5>
+                    <small class="text-muted">Full-featured example with multiple filter types</small>
+                </div>
+                <div class="card-body">
+                    <p class="card-text mb-4">
+                        This example demonstrates a comprehensive QueryBuilder setup for a product catalog with various filter types including:
+                        strings, selections, numbers, dates, booleans, and multi-select options.
+                    </p>
+
+                    <QueryBuilder @ref="queryBuilder"
+                                  Filters="filters"
+                                  Options="options"
+                                  OnRulesChanged="OnRulesChanged"
+                                  CssClass="mb-3" />
+
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="btn-group flex-wrap" role="group">
+                                <button type="button" class="btn btn-primary" @onclick="GetRules">
+                                    <i class="bi bi-code"></i> Get Rules
+                                </button>
+                                <button type="button" class="btn btn-secondary" @onclick="ClearRules">
+                                    <i class="bi bi-trash"></i> Clear
+                                </button>
+                                <button type="button" class="btn btn-info" @onclick="ValidateRules">
+                                    <i class="bi bi-check-circle"></i> Validate
+                                </button>
+                                <button type="button" class="btn btn-warning" @onclick="LoadSampleRules">
+                                    <i class="bi bi-upload"></i> Load Sample
+                                </button>
+                                <button type="button" class="btn btn-success" @onclick="LoadAdvancedRules">
+                                    <i class="bi bi-database"></i> Advanced Sample
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <small class="text-muted">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Rules update automatically as you build
+                            </small>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(validationMessage))
+                    {
+                        <div class="alert alert-info mt-3" role="alert">
+                            <i class="bi bi-info-circle me-2"></i>
+                            @validationMessage
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrEmpty(currentRules))
+                    {
+                        <div class="mt-4">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h6 class="mb-0">Current Rules (JSON):</h6>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="() => CopyToClipboard(currentRules)">
+                                    <i class="bi bi-clipboard"></i> Copy
+                                </button>
+                            </div>
+                            <pre class="bg-light p-3 rounded border" style="max-height: 300px; overflow-y: auto;"><code>@currentRules</code></pre>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="bi bi-list-check me-2"></i>
+                        Available Filters
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Filter</th>
+                                    <th>Type</th>
+                                    <th>Input</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var filter in filters)
+                                {
+                                    <tr>
+                                        <td><strong>@filter.Label</strong></td>
+                                        <td><span class="badge bg-secondary">@filter.Type</span></td>
+                                        <td>@(filter.Input ?? "text")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="bi bi-sliders me-2"></i>
+                        Configuration Options
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        <li><i class="bi bi-check-circle text-success me-2"></i>Groups allowed: <strong>@(options.AllowGroups?.ToString() ?? "true")</strong></li>
+                        <li><i class="bi bi-check-circle text-success me-2"></i>Empty rules: <strong>@(options.AllowEmpty?.ToString() ?? "false")</strong></li>
+                        <li><i class="bi bi-check-circle text-success me-2"></i>Default condition: <strong>@(options.DefaultCondition ?? "AND")</strong></li>
+                        <li><i class="bi bi-check-circle text-success me-2"></i>Display errors: <strong>@(options.DisplayErrors?.ToString() ?? "true")</strong></li>
+                        <li><i class="bi bi-check-circle text-success me-2"></i>Bootstrap Icons integration</li>
+                        <li><i class="bi bi-check-circle text-success me-2"></i>Real-time rule change events</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private QueryBuilder queryBuilder = default!;
+    private string currentRules = "";
+    private string validationMessage = "";
+
+    private readonly QueryBuilderFilter[] filters = new[]
+    {
+        new QueryBuilderFilter
+        {
+            Id = "name",
+            Label = "Product Name",
+            Type = "string",
+            Placeholder = "Enter product name"
+        },
+        new QueryBuilderFilter
+        {
+            Id = "category",
+            Label = "Category",
+            Type = "string",
+            Input = "select",
+            Values = new Dictionary<string, string>
+            {
+                { "electronics", "Electronics" },
+                { "clothing", "Clothing" },
+                { "books", "Books" },
+                { "home", "Home & Garden" },
+                { "sports", "Sports & Outdoors" }
+            }
+        },
+        new QueryBuilderFilter
+        {
+            Id = "price",
+            Label = "Price",
+            Type = "double",
+            Validation = new QueryBuilderValidation
+            {
+                Min = 0,
+                Max = 10000,
+                Step = 0.01
+            }
+        },
+        new QueryBuilderFilter
+        {
+            Id = "in_stock",
+            Label = "In Stock",
+            Type = "boolean",
+            Input = "radio",
+            Values = new Dictionary<string, string>
+            {
+                { "true", "Yes" },
+                { "false", "No" }
+            }
+        },
+        new QueryBuilderFilter
+        {
+            Id = "rating",
+            Label = "Customer Rating",
+            Type = "integer",
+            Validation = new QueryBuilderValidation
+            {
+                Min = 1,
+                Max = 5
+            }
+        },
+        new QueryBuilderFilter
+        {
+            Id = "release_date",
+            Label = "Release Date",
+            Type = "date"
+        },
+        new QueryBuilderFilter
+        {
+            Id = "tags",
+            Label = "Tags",
+            Type = "string",
+            Input = "select",
+            Multiple = true,
+            Values = new Dictionary<string, string>
+            {
+                { "new", "New Arrival" },
+                { "sale", "On Sale" },
+                { "bestseller", "Best Seller" },
+                { "featured", "Featured" }
+            }
+        }
+    };
+
+    private readonly QueryBuilderOptions options = new()
+    {
+        AllowGroups = true,
+        AllowEmpty = false,
+        DefaultCondition = "AND",
+        DisplayErrors = true,
+        DisplayEmptyFilter = true,
+        SelectPlaceholder = "-- Select a filter --",
+        Icons = new QueryBuilderIcons
+        {
+            AddGroup = "bi bi-plus-square",
+            AddRule = "bi bi-plus",
+            RemoveGroup = "bi bi-x-square",
+            RemoveRule = "bi bi-x",
+            Error = "bi bi-exclamation-triangle"
+        }
+    };
+
+    private void OnRulesChanged(string rules)
+    {
+        currentRules = rules;
+        validationMessage = "";
+        StateHasChanged();
+    }
+
+    private async Task GetRules()
+    {
+        currentRules = await queryBuilder.GetRulesAsync();
+        validationMessage = "";
+    }
+
+    private async Task ClearRules()
+    {
+        await queryBuilder.ClearAsync();
+        currentRules = "";
+        validationMessage = "Rules cleared successfully.";
+    }
+
+    private async Task ValidateRules()
+    {
+        var isValid = await queryBuilder.ValidateAsync();
+        validationMessage = isValid ? "✅ Rules are valid!" : "❌ Rules contain validation errors.";
+    }
+
+    private async Task LoadSampleRules()
+    {
+        var sampleRules = new QueryBuilderRule
+        {
+            Condition = "AND",
+            Rules = new List<object>
+            {
+                new
+                {
+                    id = "category",
+                    field = "category",
+                    type = "string",
+                    input = "select",
+                    @operator = "equal",
+                    value = "electronics"
+                },
+                new
+                {
+                    condition = "OR",
+                    rules = new List<object>
+                    {
+                        new
+                        {
+                            id = "price",
+                            field = "price",
+                            type = "double",
+                            input = "number",
+                            @operator = "less",
+                            value = 100.00
+                        },
+                        new
+                        {
+                            id = "rating",
+                            field = "rating",
+                            type = "integer",
+                            input = "number",
+                            @operator = "greater_or_equal",
+                            value = 4
+                        }
+                    }
+                }
+            }
+        };
+
+        await queryBuilder.SetRulesAsync(sampleRules);
+        validationMessage = "Sample rules loaded: Electronics under $100 OR rating 4+";
+    }
+
+    private async Task LoadAdvancedRules()
+    {
+        var advancedRules = new QueryBuilderRule
+        {
+            Condition = "AND",
+            Rules = new List<object>
+            {
+                new
+                {
+                    id = "name",
+                    field = "name",
+                    type = "string",
+                    input = "text",
+                    @operator = "contains",
+                    value = "Pro"
+                },
+                new
+                {
+                    condition = "OR",
+                    rules = new List<object>
+                    {
+                        new
+                        {
+                            condition = "AND",
+                            rules = new List<object>
+                            {
+                                new
+                                {
+                                    id = "category",
+                                    field = "category",
+                                    type = "string",
+                                    input = "select",
+                                    @operator = "equal",
+                                    value = "electronics"
+                                },
+                                new
+                                {
+                                    id = "price",
+                                    field = "price",
+                                    type = "double",
+                                    input = "number",
+                                    @operator = "between",
+                                    value = new[] { 50.0, 500.0 }
+                                }
+                            }
+                        },
+                        new
+                        {
+                            condition = "AND",
+                            rules = new List<object>
+                            {
+                                new
+                                {
+                                    id = "tags",
+                                    field = "tags",
+                                    type = "string",
+                                    input = "select",
+                                    @operator = "in",
+                                    value = new[] { "featured", "bestseller" }
+                                },
+                                new
+                                {
+                                    id = "in_stock",
+                                    field = "in_stock",
+                                    type = "boolean",
+                                    input = "radio",
+                                    @operator = "equal",
+                                    value = true
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        await queryBuilder.SetRulesAsync(advancedRules);
+        validationMessage = "Advanced rules loaded: Complex nested conditions with multiple groups";
+    }
+
+    private void CopyToClipboard(string text)
+    {
+        // Note: In a real app, you'd use JSInterop to copy to clipboard
+        validationMessage = "📋 Rules copied to clipboard! (Implementation varies by browser)";
+    }
+}

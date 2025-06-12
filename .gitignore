@@ -5,3 +5,14 @@ doc
 .idea
 *.iml
 package-lock.json
+
+# .NET build artifacts
+bin/
+obj/
+*.nupkg
+*.snupkg
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates

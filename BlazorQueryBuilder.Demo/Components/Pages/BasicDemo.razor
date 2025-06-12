@@ -1,0 +1,172 @@
+@page "/basic-demo"
+@using BlazorQueryBuilder.Components
+@using BlazorQueryBuilder.Models
+
+<PageTitle>Basic Demo - BlazorQueryBuilder</PageTitle>
+
+<div class="container mt-4">
+    <h1>🔍 Basic Demo</h1>
+    <p class="lead">Simple query building with common filter types.</p>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Query Builder</h5>
+                </div>
+                <div class="card-body">
+                    <QueryBuilder @ref="queryBuilder"
+                                  Filters="filters"
+                                  OnRulesChanged="OnRulesChanged" />
+                </div>
+            </div>
+
+            <div class="mt-3">
+                <button class="btn btn-primary me-2" @onclick="GetRules">Get Rules</button>
+                <button class="btn btn-secondary me-2" @onclick="ClearRules">Clear All</button>
+                <button class="btn btn-info me-2" @onclick="LoadSampleRules">Load Sample</button>
+                <button class="btn btn-warning" @onclick="ValidateRules">Validate</button>
+            </div>
+
+            @if (!string.IsNullOrEmpty(statusMessage))
+            {
+                <div class="alert alert-info mt-3">
+                    <i class="bi bi-info-circle"></i> @statusMessage
+                </div>
+            }
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Current Rules (JSON)</h6>
+                </div>
+                <div class="card-body">
+                    <pre class="bg-light p-2 rounded small" style="max-height: 400px; overflow-y: auto;">@rulesJson</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private QueryBuilder queryBuilder = default!;
+    private string rulesJson = "{}";
+    private string statusMessage = "";
+
+    private readonly QueryBuilderFilter[] filters = new[]
+    {
+        new QueryBuilderFilter 
+        { 
+            Id = "name", 
+            Label = "Name", 
+            Type = "string" 
+        },
+        new QueryBuilderFilter 
+        { 
+            Id = "age", 
+            Label = "Age", 
+            Type = "integer" 
+        },
+        new QueryBuilderFilter 
+        { 
+            Id = "email", 
+            Label = "Email", 
+            Type = "string" 
+        },
+        new QueryBuilderFilter 
+        { 
+            Id = "salary", 
+            Label = "Salary", 
+            Type = "double" 
+        },
+        new QueryBuilderFilter 
+        { 
+            Id = "active", 
+            Label = "Active", 
+            Type = "boolean" 
+        },
+        new QueryBuilderFilter 
+        { 
+            Id = "birthdate", 
+            Label = "Birth Date", 
+            Type = "date" 
+        }
+    };
+
+    private async Task OnRulesChanged(string rules)
+    {
+        rulesJson = rules;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task GetRules()
+    {
+        try
+        {
+            var rules = await queryBuilder.GetRulesAsync();
+            rulesJson = rules;
+            statusMessage = "Rules retrieved successfully!";
+        }
+        catch (Exception ex)
+        {
+            statusMessage = $"Error getting rules: {ex.Message}";
+        }
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task ClearRules()
+    {
+        try
+        {
+            await queryBuilder.ClearAsync();
+            statusMessage = "Rules cleared successfully!";
+        }
+        catch (Exception ex)
+        {
+            statusMessage = $"Error clearing rules: {ex.Message}";
+        }
+    }
+
+    private async Task LoadSampleRules()
+    {
+        try
+        {
+            var sampleRules = @"{
+                ""condition"": ""AND"",
+                ""rules"": [
+                    {
+                        ""id"": ""name"",
+                        ""operator"": ""contains"",
+                        ""value"": ""John""
+                    },
+                    {
+                        ""id"": ""age"",
+                        ""operator"": ""greater"",
+                        ""value"": 25
+                    }
+                ]
+            }";
+            
+            await queryBuilder.SetRulesAsync(sampleRules);
+            statusMessage = "Sample rules loaded successfully!";
+        }
+        catch (Exception ex)
+        {
+            statusMessage = $"Error loading sample rules: {ex.Message}";
+        }
+    }
+
+    private async Task ValidateRules()
+    {
+        try
+        {
+            var isValid = await queryBuilder.ValidateAsync();
+            statusMessage = isValid ? "Rules are valid ✓" : "Rules are invalid ✗";
+        }
+        catch (Exception ex)
+        {
+            statusMessage = $"Error validating rules: {ex.Message}";
+        }
+    }
+}
